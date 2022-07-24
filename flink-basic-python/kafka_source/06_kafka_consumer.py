@@ -1,3 +1,6 @@
+"""
+kafka에서 들어온데이터 blackhole이라는 커넥터 만들어 소모하기
+"""
 import os
 from pyflink.common.serialization import SimpleStringSchema
 from pyflink.datastream import StreamExecutionEnvironment
@@ -12,13 +15,8 @@ env.get_checkpoint_config().set_max_concurrent_checkpoints(1)
 t_env = StreamTableEnvironment.create(env)
 
 # config에 kafka connector 등록하기
-kafka_jar_path = os.path.join(
-  os.path.abspath(os.path.dirname(__file__)), "../",
-  "flink-sql-connector-kafka_2.11-1.14.0.jar"
-)
-t_env.get_config().get_configuration().set_string(
-  "pipeline.jars", f"file://{kafka_jar_path}"
-)
+kafka_jar_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../","flink-sql-connector-kafka_2.11-1.14.0.jar")
+t_env.get_config().get_configuration().set_string("pipeline.jars", f"file://{kafka_jar_path}")
 
 # kafka를 바라보고 있는 source table 만들기
 schema = SimpleStringSchema()

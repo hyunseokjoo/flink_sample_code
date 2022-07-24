@@ -2,21 +2,17 @@ import os
 from pyflink.datastream import StreamExecutionEnvironment
 from pyflink.table import StreamTableEnvironment, EnvironmentSettings
 
-env = StreamExecutionEnvironment.get_execution_environment()
-env.set_parallelism(1)
+env = StreamExecutionEnvironment.get_execution_environment().set_parallelism(1)
 settings = EnvironmentSettings.new_instance().in_streaming_mode().use_blink_planner().build()
 t_env = StreamTableEnvironment.create(env, environment_settings=settings)
 
 # config에 kafka connector 등록하기
-kafka_jar_path = os.path.join(
-  os.path.abspath(os.path.dirname(__file__)), "../",
-  "flink-sql-connector-kafka_2.11-1.14.0.jar"
-)
-t_env.get_config().get_configuration().set_string(
-  "pipeline.jars", f"file://{kafka_jar_path}"
-)
+kafka_jar_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../","flink-sql-connector-kafka_2.11-1.14.0.jar")
+t_env.get_config().get_configuration().set_string("pipeline.jars", f"file://{kafka_jar_path}")
 
 # kafka를 바라보고 있는 source table 만들기
+# 처음부터 불러오기 'scan.startup.mode' = 'earliest-offset'
+# 나중에 들어온 것만 'scan.startup.mode' = 'latest-offset'
 souce_query = f"""
   create table source (
     framework STRING,
