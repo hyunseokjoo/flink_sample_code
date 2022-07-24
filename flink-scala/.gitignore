@@ -1,5 +1,8 @@
 *.class
 *.log
+.bsp
+.idea
+.target
 
 # Created by https://www.toptal.com/developers/gitignore/api/scala,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=scala,intellij
